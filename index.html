@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MediCare Hospital Management</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background: #fff5f5;
+    color: #333;
+}
+
+header {
+    background: #c8102e;
+    color: white;
+    padding: 18px 7%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+header h2 {
+    font-size: 27px;
+}
+
+nav button {
+    background: transparent;
+    border: none;
+    color: white;
+    margin: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+nav button:hover {
+    color: #ffd9df;
+}
+
+.hero {
+    min-height: 370px;
+    background: linear-gradient(120deg, #b5122b, #ed5369);
+    color: white;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 55px 8%;
+    gap: 25px;
+    flex-wrap: wrap;
+}
+
+.hero h1 {
+    font-size: 43px;
+    margin-bottom: 18px;
+}
+
+.hero p {
+    line-height: 1.7;
+    max-width: 480px;
+}
+
+.hero-art {
+    font-size: 115px;
+    background: white;
+    color: #c8102e;
+    border-radius: 50%;
+    width: 210px;
+    height: 210px;
+    display: grid;
+    place-items: center;
+}
+
+.btn {
+    background: #c8102e;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    margin-top: 12px;
+}
+
+.hero .btn {
+    background: white;
+    color: #c8102e;
+}
+
+.btn:hover {
+    opacity: .85;
+}
+
+.container {
+    width: 90%;
+    max-width: 1100px;
+    margin: 35px auto;
+}
+
+h2.section-title {
+    text-align: center;
+    color: #c8102e;
+    margin-bottom: 25px;
+}
+
+.cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 20px;
+}
+
+.card {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px #9d1b2b15;
+    text-align: center;
+    border: 1px solid #ffe0e4;
+}
+
+.card h3 {
+    color: #c8102e;
+    margin: 12px 0;
+}
+
+.icon {
+    font-size: 42px;
+}
+
+input, select, textarea {
+    width: 100%;
+    padding: 12px;
+    margin: 8px 0 15px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    outline: none;
+}
+
+input:focus, select:focus, textarea:focus {
+    border-color: #c8102e;
+}
+
+.form-box {
+    background: white;
+    padding: 30px;
+    max-width: 480px;
+    margin: 35px auto;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px #9d1b2b18;
+}
+
+.form-box h2 {
+    color: #c8102e;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.form-box label {
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.form-box .btn {
+    width: 100%;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    margin-top: 15px;
+    min-width: 600px;
+}
+
+th, td {
+    padding: 13px;
+    border: 1px solid #eee;
+    text-align: center;
+    font-size: 13px;
+}
+
+th {
+    background: #c8102e;
+    color: white;
+}
+
+.table-wrap {
+    overflow-x: auto;
+}
+
+footer {
+    background: #9f1027;
+    color: white;
+    padding: 25px;
+    text-align: center;
+    margin-top: 50px;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.small-btn {
+    padding: 7px 10px;
+    margin: 3px;
+    font-size: 11px;
+}
+
+#message {
+    text-align: center;
+    color: #c8102e;
+    font-weight: bold;
+    margin: 10px;
+}
+
+@media(max-width:650px) {
+    header {
+        justify-content: center;
+        text-align: center;
+    }
+    .hero {
+        text-align: center;
+    }
+    .hero h1 {
+        font-size: 32px;
+    }
+    .hero-art {
+        width: 150px;
+        height: 150px;
+        font-size: 80px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h2>✚ MediCare</h2>
+    <nav>
+        <button onclick="home()">Home</button>
+        <button onclick="doctors()">Doctors</button>
+        <button onclick="register()">Register</button>
+        <button onclick="login()">Login</button>
+        <button onclick="dashboard()">Dashboard</button>
+        <button onclick="logout()">Logout</button>
+    </nav>
+</header>
+
+<div id="app"></div>
+
+<footer>
+    <h3>✚ MediCare Hospital</h3>
+    <p>Your Health, Our Priority.</p>
+    <p>© 2026 MediCare. All Rights Reserved.</p>
+</footer>
+
+<script>
+
+// Demo data
+let currentUser = null;
+
+let users = JSON.parse(localStorage.getItem("mc_users") || "[]");
+
+let appointments = JSON.parse(
+    localStorage.getItem("mc_appointments") || "[]"
+);
+
+const doctorList = [
+    {id:1,name:"Dr. Ananya Rao",specialty:"Cardiology",fee:700},
+    {id:2,name:"Dr. Rahul Sharma",specialty:"Dermatology",fee:500},
+    {id:3,name:"Dr. Priya Nair",specialty:"Pediatrics",fee:600},
+    {id:4,name:"Dr. Kiran Kumar",specialty:"Orthopedics",fee:800},
+    {id:5,name:"Dr. Meera Iyer",specialty:"General Medicine",fee:400}
+];
+
+function saveData() {
+    localStorage.setItem("mc_users",JSON.stringify(users));
+    localStorage.setItem("mc_appointments",JSON.stringify(appointments));
+}
+
+function home() {
+document.getElementById("app").innerHTML = `
+<section class="hero">
+    <div>
+        <h1>Better Healthcare<br>For A Better Life</h1>
+        <p>
+        Welcome to MediCare Hospital Appointment Management System.
+        Find experienced doctors and book your appointments easily.
+        </p>
+        <button class="btn" onclick="doctors()">Book Appointment</button>
+    </div>
+    <div class="hero-art">✚</div>
+</section>
+
+<div class="container">
+<h2 class="section-title">Our Medical Services</h2>
+
+<div class="cards">
+    <div class="card">
+        <div class="icon">❤️</div>
+        <h3>Cardiology</h3>
+        <p>Heart health and cardiac care.</p>
+    </div>
+
+    <div class="card">
+        <div class="icon">🩺</div>
+        <h3>General Medicine</h3>
+        <p>Complete general health checkups.</p>
+    </div>
+
+    <div class="card">
+        <div class="icon">👶</div>
+        <h3>Pediatrics</h3>
+        <p>Special care for children.</p>
+    </div>
+
+    <div class="card">
+        <div class="icon">🦴</div>
+        <h3>Orthopedics</h3>
+        <p>Bone and joint treatment.</p>
+    </div>
+</div>
+</div>`;
+}
+
+function register() {
+document.getElementById("app").innerHTML = `
+<div class="form-box">
+<h2>Patient Registration</h2>
+
+<form onsubmit="registerUser(event)">
+<label>Full Name</label>
+<input id="regName" required placeholder="Enter your name">
+
+<label>Email Address</label>
+<input id="regEmail" type="email" required placeholder="Enter email">
+
+<label>Password</label>
+<input id="regPassword" type="password" minlength="6" required placeholder="Create password">
+
+<button class="btn">Register</button>
+</form>
+<p id="message"></p>
+</div>`;
+}
+
+function registerUser(e) {
+e.preventDefault();
+
+let email = regEmail.value.trim().toLowerCase();
+
+if(users.some(u=>u.email===email)) {
+    alert("Email already registered!");
+    return;
+}
+
+let user = {
+    name:regName.value.trim(),
+    email:email,
+    password:regPassword.value,
+    role:"patient"
+};
+
+users.push(user);
+saveData();
+
+alert("Registration successful!");
+login();
+}
+
+function login() {
+document.getElementById("app").innerHTML = `
+<div class="form-box">
+<h2>Login</h2>
+
+<form onsubmit="loginUser(event)">
+<label>Email Address</label>
+<input id="email" type="email" required>
+
+<label>Password</label>
+<input id="password" type="password" required>
+
+<button class="btn">Login</button>
+</form>
+
+<p style="margin-top:15px;font-size:12px">
+Demo Admin: admin@medicare.com / admin123
+</p>
+</div>`;
+}
+
+function loginUser(e) {
+e.preventDefault();
+
+let mail=email.value.trim().toLowerCase();
+let pass=password.value;
+
+let user=users.find(u=>u.email===mail && u.password===pass);
+
+if(mail==="admin@medicare.com" && pass==="admin123") {
+    currentUser={name:"Administrator",email:mail,role:"admin"};
+}
+else if(user) {
+    currentUser=user;
+}
+else {
+    alert("Invalid email or password");
+    return;
+}
+
+alert("Login successful!");
+dashboard();
+}
+
+function logout() {
+currentUser=null;
+alert("Logged out successfully");
+home();
+}
+
+function doctors() {
+document.getElementById("app").innerHTML = `
+<div class="container">
+<h2 class="section-title">Our Expert Doctors</h2>
+
+<input id="search" placeholder="Search doctor or specialization..."
+oninput="searchDoctors()">
+
+<div class="cards" id="doctorCards"></div>
+</div>`;
+
+showDoctors(doctorList);
+}
+
+function showDoctors(list) {
+document.getElementById("doctorCards").innerHTML=list.map(d=>`
+<div class="card">
+<div class="icon">👨‍⚕️</div>
+<h3>${d.name}</h3>
+<p>${d.specialty}</p>
+<p>Consultation Fee: ₹${d.fee}</p>
+<button class="btn" onclick="book(${d.id})">
+Book Appointment
+</button>
+</div>
+`).join("");
+}
+
+function searchDoctors() {
+let q=document.getElementById("search").value.toLowerCase();
+
+let result=doctorList.filter(d=>
+d.name.toLowerCase().includes(q) ||
+d.specialty.toLowerCase().includes(q)
+);
+
+showDoctors(result);
+}
+
+function book(id) {
+if(!currentUser || currentUser.role!=="patient") {
+    alert("Please login with a patient account first.");
+    login();
+    return;
+}
+
+let doctor=doctorList.find(d=>d.id===id);
+
+document.getElementById("app").innerHTML=`
+<div class="form-box">
+<h2>Book Appointment</h2>
+<p><b>Doctor:</b> ${doctor.name}</p>
+<p><b>Specialization:</b> ${doctor.specialty}</p>
+<p><b>Fee:</b> ₹${doctor.fee}</p>
+
+<form onsubmit="saveAppointment(event,${id})">
+<label>Appointment Date</label>
+<input type="date" id="date" min="${new Date(Date.now()+86400000).toISOString().slice(0,10)}" required>
+
+<label>Appointment Time</label>
+<select id="time" required>
+<option value="">Select Time</option>
+<option>09:00 AM</option>
+<option>10:00 AM</option>
+<option>11:00 AM</option>
+<option>12:00 PM</option>
+<option>02:00 PM</option>
+<option>03:00 PM</option>
+<option>04:00 PM</option>
+</select>
+
+<label>Reason for Appointment</label>
+<textarea id="reason" placeholder="Enter your health concern"></textarea>
+
+<button class="btn">Confirm Appointment</button>
+</form>
+</div>`;
+}
+
+function saveAppointment(e,id) {
+e.preventDefault();
+
+let date=document.getElementById("date").value;
+let time=document.getElementById("time").value;
+let doctor=doctorList.find(d=>d.id===id);
+
+if(new Date(date+"T00:00:00") <= new Date(new Date().toDateString())) {
+    alert("Choose a future date.");
+    return;
+}
+
+if(appointments.some(a=>a.doctorId===id && a.date===date && a.time===time && a.status!=="Cancelled")) {
+    alert("This time slot is already booked.");
+    return;
+}
+
+appointments.push({
+    id:Date.now(),
+    patient:currentUser.name,
+    email:currentUser.email,
+    doctor:doctor.name,
+    doctorId:id,
+    specialty:doctor.specialty,
+    fee:doctor.fee,
+    date:date,
+    time:time,
+    reason:document.getElementById("reason").value,
+    status:"Pending"
+});
+
+saveData();
+
+alert("Appointment booked successfully!");
+dashboard();
+}
+
+function dashboard() {
+if(!currentUser) {
+    alert("Please login first.");
+    login();
+    return;
+}
+
+if(currentUser.role==="admin") {
+    adminDashboard();
+    return;
+}
+
+let mine=appointments.filter(a=>
+    currentUser.role==="patient"
+    ? a.email===currentUser.email
+    : a.doctor===currentUser.name
+);
+
+document.getElementById("app").innerHTML=`
+<div class="container">
+<h2 class="section-title">Welcome, ${currentUser.name}</h2>
+<div class="card">
+<h3>${currentUser.role==="doctor"?"Doctor Dashboard":"Patient Dashboard"}</h3>
+<p>Total Appointments: ${mine.length}</p>
+${currentUser.role==="patient"?
+'<button class="btn" onclick="doctors()">Book New Appointment</button>':""}
+</div>
+
+<h2 class="section-title" style="margin-top:30px">My Appointments</h2>
+<div class="table-wrap">
+<table>
+<thead>
+<tr>
+<th>Doctor</th><th>Date</th><th>Time</th>
+<th>Fee</th><th>Status</th><th>Action</th>
+</tr>
+</thead>
+<tbody>
+${mine.map(a=>`
+<tr>
+<td>${a.doctor}</td>
+<td>${a.date}</td>
+<td>${a.time}</td>
+<td>₹${a.fee}</td>
+<td>${a.status}</td>
+<td>
+${currentUser.role==="patient" && ["Pending","Approved"].includes(a.status)?
+`<button class="btn small-btn" onclick="cancelAppointment(${a.id})">Cancel</button>`:""}
+${currentUser.role==="doctor" && a.status==="Pending"?
+`<button class="btn small-btn" onclick="updateStatus(${a.id},'Approved')">Approve</button>
+<button class="btn small-btn" onclick="updateStatus(${a.id},'Rejected')">Reject</button>`:""}
+${currentUser.role==="doctor" && a.status==="Approved"?
+`<button class="btn small-btn" onclick="updateStatus(${a.id},'Completed')">Complete</button>`:""}
+</td>
+</tr>
+`).join("")}
+</tbody>
+</table>
+</div>
+</div>`;
+}
+
+function cancelAppointment(id) {
+let a=appointments.find(x=>x.id===id);
+if(!a || a.email!==currentUser.email)return;
+a.status="Cancelled";
+saveData();
+dashboard();
+}
+
+function updateStatus(id,status) {
+let a=appointments.find(x=>x.id===id);
+if(!a)return;
+a.status=status;
+saveData();
+dashboard();
+}
+
+function adminDashboard() {
+document.getElementById("app").innerHTML=`
+<div class="container">
+<h2 class="section-title">Admin Dashboard</h2>
+
+<div class="cards">
+<div class="card">
+<h3>${users.filter(u=>u.role==="patient").length}</h3>
+<p>Total Patients</p>
+</div>
+
+<div class="card">
+<h3>${doctorList.length}</h3>
+<p>Total Doctors</p>
+</div>
+
+<div class="card">
+<h3>${appointments.length}</h3>
+<p>Total Appointments</p>
+</div>
+
+<div class="card">
+<h3>${appointments.filter(a=>a.status==="Pending").length}</h3>
+<p>Pending Requests</p>
+</div>
+</div>
+
+<h2 class="section-title" style="margin-top:35px">
+All Appointments
+</h2>
+
+<div class="table-wrap">
+<table>
+<tr>
+<th>Patient</th>
+<th>Doctor</th>
+<th>Date</th>
+<th>Time</th>
+<th>Status</th>
+<th>Action</th>
+</tr>
+
+${appointments.map(a=>`
+<tr>
+<td>${a.patient}</td>
+<td>${a.doctor}</td>
+<td>${a.date}</td>
+<td>${a.time}</td>
+<td>${a.status}</td>
+<td>
+${["Pending","Approved"].includes(a.status)?
+`<button class="btn small-btn" onclick="adminCancel(${a.id})">Cancel</button>`:""}
+</td>
+</tr>
+`).join("")}
+</table>
+</div>
+</div>`;
+}
+
+function adminCancel(id) {
+let a=appointments.find(x=>x.id===id);
+if(a) a.status="Cancelled";
+saveData();
+adminDashboard();
+}
+
+// Start application
+home();
+
+</script>
+</body>
+</html>
